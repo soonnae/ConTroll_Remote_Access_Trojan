@@ -24,8 +24,8 @@ import copy
 import os
 import subprocess
 import sys
-import xml.etree.ElementTree as ET
-import xml.etree.cElementTree as cET
+import defusedxml.ElementTree as ET
+import defusedxml.cElementTree as cET
 
 
 if hasattr(sys, 'frozen'):

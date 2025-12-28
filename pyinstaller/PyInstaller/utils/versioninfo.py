@@ -18,6 +18,7 @@
 import win32api
 import struct
 import pywintypes
+import ast
 
 TEST=0
 
@@ -520,7 +521,7 @@ class VarStruct:
 
 def SetVersion(exenm, versionfile):
     txt = open(versionfile, 'rU').read()
-    vs = eval(txt)
+    vs = ast.literal_eval(txt)
     hdst = win32api.BeginUpdateResource(exenm, 0)
     win32api.UpdateResource(hdst, RT_VERSION, 1, vs.toRaw())
     win32api.EndUpdateResource (hdst, 0)

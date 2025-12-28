@@ -40,7 +40,7 @@ _environ = None
 ### **NOTE** This module is used during bootstrap.
 ### Import *ONLY* builtin modules.
 
-import marshal
+import pickle
 import struct
 import imp
 import sys
@@ -126,12 +126,12 @@ class Archive:
         Overridable.
         Default: After magic comes an int (4 byte native) giving the
         position of the TOC within self.lib.
-        Default: The TOC is a marshal-able string.
+        Default: The TOC is a pickle-able string.
         """
         self.lib.seek(self.start + self.TOCPOS)
         (offset,) = struct.unpack('!i', self.lib.read(4))
         self.lib.seek(self.start + offset)
-        self.toc = marshal.load(self.lib)
+        self.toc = pickle.load(self.lib)
 
     ######## This is what is called by FuncImporter #######
     ## Since an Archive is flat, we ignore parent and modname.
@@ -152,13 +152,13 @@ class Archive:
         Default implementation:
           self.toc is a dict
           self.toc[name] is pos
-          self.lib has the code object marshal-ed at pos
+          self.lib has the code object pickle-ed at pos
         """
         ispkg, pos = self.toc.get(name, (0, None))
         if pos is None:
             return None
         self.lib.seek(self.start + pos)
-        return ispkg, marshal.load(self.lib)
+        return ispkg, pickle.load(self.lib)
 
     ########################################################################
     # Informational methods
@@ -231,9 +231,9 @@ class Archive:
     def save_toc(self, tocpos):
         """
         Default - toc is a dict
-        Gets marshaled to self.lib
+        Gets pickled to self.lib
         """
-        marshal.dump(self.toc, self.lib)
+        pickle.dump(self.toc, self.lib)
 
     def save_trailer(self, tocpos):
         """
@@ -340,9 +340,9 @@ class ZlibArchive(Archive):
                 raise
             raise ImportError('invalid decryption key')
         try:
-            co = marshal.loads(obj)
+            co = pickle.loads(obj)
         except EOFError:
-            raise ImportError("PYZ entry '%s' failed to unmarshal" % name)
+            raise ImportError("PYZ entry '%s' failed to unpickle" % name)
         return ispkg, co
 
     def add(self, entry):
@@ -360,7 +360,7 @@ class ZlibArchive(Archive):
                 f = open(pth, 'rb')
                 f.seek(8)  # skip magic and timestamp
                 bytecode = f.read()
-                marshal.loads(bytecode).co_filename  # to make sure it's valid
+                pickle.loads(bytecode).co_filename  # to make sure it's valid
                 obj = zlib.compress(bytecode, self.LEVEL)
             except (IOError, ValueError, EOFError, AttributeError):
                 raise ValueError("bad bytecode in %s and no source" % pth)
@@ -373,7 +373,7 @@ class ZlibArchive(Archive):
                 print "Syntax error in", pth[:-1]
                 print e.args
                 raise
-            obj = zlib.compress(marshal.dumps(co), self.LEVEL)
+            obj = zlib.compress(pickle.dumps(co), self.LEVEL)
         if self.crypted:
             obj = AES.new(self.key, AES.MODE_CFB, self._iv(nm)).encrypt(obj)
         self.toc[nm] = (ispkg, self.lib.tell(), len(obj))

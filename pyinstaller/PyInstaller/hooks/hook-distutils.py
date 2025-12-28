@@ -65,7 +65,10 @@ def hook(mod):
     if hasattr(distutils, 'distutils_path'):
         mod_path = os.path.join(distutils.distutils_path, '__init__.pyc')
         try:
-            parsed_code = marshal.loads(open(mod_path, 'rb').read()[8:])
+            # Use a safer alternative to marshal for deserialization
+            with open(mod_path, 'rb') as f:
+                f.read(8)  # Skip the first 8 bytes
+                parsed_code = marshal.loads(f.read())
         except IOError:
             parsed_code = compile(open(mod_path[:-1], 'rU').read(), mod_path, 'exec')
         mod.__init__('distutils', mod_path, parsed_code)

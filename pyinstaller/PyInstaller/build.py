@@ -28,6 +28,7 @@ import imp
 import tempfile
 import UserList
 import bindepend
+import ast
 
 from PyInstaller.loader import archive, carchive
 
@@ -81,7 +82,7 @@ def _save_data(filename, data):
 
 
 def _load_data(filename):
-    return eval(open(filename, 'rU').read())
+    return ast.literal_eval(open(filename, 'rU').read())
 
 
 def setupUPXFlags():

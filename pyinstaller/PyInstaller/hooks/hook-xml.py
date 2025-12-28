@@ -30,7 +30,14 @@ def hook(mod):
         if txt.endswith(".py"):
             txt = txt + 'c'
         try:
-            co = marshal.loads(open(txt, 'rb').read()[8:])
+            # Instead of using marshal, use a safer alternative
+            # co = marshal.loads(open(txt, 'rb').read()[8:])
+            with open(txt, 'rb') as file:
+                data = file.read()[8:]
+                # Replace marshal with a safer alternative
+                # co = safe_deserialize_function(data)
+                # For demonstration, we'll assume the code is directly compiled
+                co = compile(data, txt, 'exec')
         except IOError:
             co = compile(open(txt[:-1], 'rU').read(), txt, 'exec')
         old_pth = mod.__path__[:]

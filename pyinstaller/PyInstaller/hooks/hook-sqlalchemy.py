@@ -18,6 +18,7 @@
 # Contributed by Greg Copeland
 
 from PyInstaller.hooks.hookutils import exec_statement
+import ast
 
 # include most common database bindings
 # some database bindings are detected and include some
@@ -26,7 +27,7 @@ hiddenimports = ['pysqlite2', 'MySQLdb', 'psycopg2']
 
 # sqlalchemy.databases package from pre 0.6 sqlachemy versions
 databases = exec_statement("import sqlalchemy.databases;print sqlalchemy.databases.__all__")
-databases = eval(databases.strip())
+databases = ast.literal_eval(databases.strip())
 
 for n in databases:
     hiddenimports.append("sqlalchemy.databases." + n)
@@ -37,7 +38,7 @@ is_alch06 = version >= '0.6'
 
 if is_alch06:
     dialects = exec_statement("import sqlalchemy.dialects;print sqlalchemy.dialects.__all__")
-    dialects = eval(dialects.strip())
+    dialects = ast.literal_eval(dialects.strip())
 
     for n in databases:
         hiddenimports.append("sqlalchemy.dialects." + n)

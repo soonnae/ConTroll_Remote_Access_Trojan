@@ -15,5 +15,5 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 print "test12 - xml.com"
-from xml.dom import pulldom
+from defusedxml.dom import pulldom
 print "test12 - done"
