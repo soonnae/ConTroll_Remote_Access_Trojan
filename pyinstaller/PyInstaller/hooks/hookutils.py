@@ -7,6 +7,7 @@ import PyInstaller
 import PyInstaller.compat as compat
 from PyInstaller.compat import is_darwin, set
 from PyInstaller.utils import misc
+import ast
 
 import PyInstaller.log as logging
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ def __exec_python_cmd(cmd):
     try:
         try:
             txt = compat.exec_python(*cmd)
-        except OSError, e:
+        except OSError as e:
             raise SystemExit("Execution failed: %s" % e)
     finally:
         if old_pp is not None:
@@ -70,7 +71,7 @@ def eval_statement(statement):
     if not txt:
         # return an empty string which is "not true" but iterable
         return ''
-    return eval(txt)
+    return ast.literal_eval(txt)
 
 
 def eval_script(scriptfilename, *args):
@@ -78,7 +79,7 @@ def eval_script(scriptfilename, *args):
     if not txt:
         # return an empty string which is "not true" but iterable
         return ''
-    return eval(txt)
+    return ast.literal_eval(txt)
 
 
 def get_pyextension_imports(modname):
@@ -238,7 +239,7 @@ def matplotlib_backends():
     import_statement = """
 try:
     __import__('matplotlib.backends.backend_%s')
-except ImportError, e:
+except ImportError as e:
     print str(e)
 """
 

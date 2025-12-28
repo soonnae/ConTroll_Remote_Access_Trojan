@@ -30,6 +30,7 @@ import os
 import re
 import shutil
 import sys
+import ast
 
 try:
     import PyInstaller
@@ -378,8 +379,8 @@ class BuildTestRunner(object):
                 '-b', '-r', prog)
             # Fix line-endings so eval() does not fail.
             fname_list = fname_list.replace('\r\n', '\n').replace('\n\r', '\n')
-            fname_list = eval(fname_list)
-            pattern_list = eval(open(logfn, 'rU').read())
+            fname_list = ast.literal_eval(fname_list)
+            pattern_list = ast.literal_eval(open(logfn, 'rU').read())
             # Alphabetical order of patterns.
             pattern_list.sort()
             count = 0

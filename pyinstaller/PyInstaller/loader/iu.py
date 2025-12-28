@@ -94,7 +94,7 @@ class DirOwner(Owner):
                 attempt = pth + ext
                 try:
                     st = _os_stat(attempt)
-                except OSError, e:
+                except OSError as e:
                     assert e.errno == 2  # [Errno 2] No such file or directory
                 else:
                     # Check case
@@ -123,9 +123,9 @@ class DirOwner(Owner):
                 try:
                     bytecode = compile(open(py[0], 'rU').read() + '\n', py[0], 'exec')
                     break
-                except SyntaxError, e:
-                    print "Invalid syntax in %s" % py[0]
-                    print e.args
+                except SyntaxError as e:
+                    print("Invalid syntax in %s" % py[0])
+                    print(e.args)
                     raise
             elif pyc:
                 stuff = open(pyc[0], 'rb').read()
@@ -153,7 +153,7 @@ class ZipOwner(Owner):
     def __init__(self, path):
         try:
             self.__zip = zipimport.zipimporter(path)
-        except zipimport.ZipImportError, e:
+        except zipimport.ZipImportError as e:
             raise OwnerError('%s: %s' % (str(e), path))
         Owner.__init__(self, path)
 
@@ -475,9 +475,9 @@ class ImportManager:
                 del mod.__co__
                 try:
                     if reload:
-                        exec co in sys.modules[fqname].__dict__
+                        exec(co, sys.modules[fqname].__dict__)
                     else:
-                        exec co in mod.__dict__
+                        exec(co, mod.__dict__)
                 except:
                     # In Python 2.4 and above, sys.modules is left clean
                     # after a broken import. We need to do the same to

@@ -1,2 +1,2 @@
 # xml hook test
-import xml
+import defusedxml as xml

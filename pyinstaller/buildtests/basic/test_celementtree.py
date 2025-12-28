@@ -5,5 +5,5 @@ import _elementtree
 import xml.etree.cElementTree
 print dir(xml.etree.cElementTree)
 """
-from xml.etree.cElementTree import ElementTree
+from defusedxml.ElementTree import ElementTree
 print "OK"
