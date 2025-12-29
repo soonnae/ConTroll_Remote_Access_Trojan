@@ -689,7 +689,7 @@ class PYZ(Target):
 
 def cacheDigest(fnm):
     data = open(fnm, "rb").read()
-    digest = hashlib.md5(data).digest()
+    digest = hashlib.sha256(data).digest()  # Changed from MD5 to SHA256
     return digest
 
 
@@ -766,7 +766,7 @@ def checkCache(fnm, strip=0, upx=0, dist_nm=None):
             # under Mac OSX
             cmd = ["strip", "-S", cachedfile]
     shutil.copy2(fnm, cachedfile)
-    os.chmod(cachedfile, 0755)
+    os.chmod(cachedfile, 0o644)  # Changed from 0755 to 0o644
 
     if pyasm and fnm.lower().endswith(".pyd"):
         # If python.exe has dependent assemblies, check for embedded manifest
@@ -1054,7 +1054,7 @@ class EXE(Target):
                                         self.resources):
             tmpnm = tempfile.mktemp()
             shutil.copy2(exe, tmpnm)
-            os.chmod(tmpnm, 0755)
+            os.chmod(tmpnm, 0o644)  # Changed from 0755 to 0o644
             if self.icon:
                 icon.CopyIcons(tmpnm, self.icon)
             if self.versrsrc:
@@ -1110,7 +1110,7 @@ class EXE(Target):
             logger.info("Copying archive to %s", self.pkgname)
             shutil.copy2(self.pkg.name, self.pkgname)
         outf.close()
-        os.chmod(self.name, 0755)
+        os.chmod(self.name, 0o644)  # Changed from 0755 to 0o644
         guts = (self.name, self.console, self.debug, self.icon,
                 self.versrsrc, self.resources, self.strip, self.upx,
                 self.crypt, mtime(self.name))
@@ -1138,7 +1138,7 @@ class DLL(EXE):
         self.copy(dll, outf)
         self.copy(self.pkg.name, outf)
         outf.close()
-        os.chmod(self.name, 0755)
+        os.chmod(self.name, 0o644)  # Changed from 0755 to 0o644
         _save_data(self.out,
                    (self.name, self.console, self.debug, self.icon,
                     self.versrsrc, self.manifest, self.resources, self.strip, self.upx, mtime(self.name)))
@@ -1204,7 +1204,7 @@ class COLLECT(Target):
             if typ != 'DEPENDENCY':
                 shutil.copy2(fnm, tofnm)
             if typ in ('EXTENSION', 'BINARY'):
-                os.chmod(tofnm, 0755)
+                os.chmod(tofnm, 0o644)  # Changed from 0755 to 0o644
         _save_data(self.out,
                  (self.name, self.strip_binaries, self.upx_binaries, self.toc))
         return 1

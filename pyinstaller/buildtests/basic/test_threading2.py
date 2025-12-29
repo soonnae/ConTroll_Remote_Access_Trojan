@@ -52,7 +52,8 @@ else:
     # Run subprocess.
     try:
         import subprocess
-        proc = subprocess.Popen([itself], stdout=subprocess.PIPE,
+        import shlex
+        proc = subprocess.Popen([sys.executable, shlex.quote(itself)], stdout=subprocess.PIPE,
                 env={'PYI_THREAD_TEST_CASE': 'any_string'},
                 stderr=subprocess.PIPE, shell=False)
         # Waits for subprocess to complete.
